@@ -5,22 +5,20 @@
 #   gem 'sqlite3'
 #
 development:
-  production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: hod_production
+  database: hbc
   pool: 5
   username: root
   password: 
   host: localhost
 
 production:
-  production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: hod_production
+  database: hbc
   pool: 5
   username: root
   password: 
