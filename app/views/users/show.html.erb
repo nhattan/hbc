@@ -1,0 +1,5 @@
+<%= provide(:title, @user.name) %>
+<div class="center">
+  <div><%= link_to gravatar_for(@user), @user %></div>
+  <h4><%= @user.name %></h4>
+</div>
