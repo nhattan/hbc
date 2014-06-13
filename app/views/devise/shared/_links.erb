@@ -23,3 +23,9 @@
     <%= link_to "Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider) %><br />
   <% end -%>
 <% end -%>
+
+<%- if resource.is_a? User %>
+  <%= link_to "Sign in for admin", new_admin_session_path %>
+<% else %>
+  <%= link_to "Sign in for user", new_user_session_path %>
+<% end -%>
