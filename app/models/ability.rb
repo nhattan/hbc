@@ -14,7 +14,7 @@ class Ability
   end
 
   def admin_rules(user)
-    can :manange, :all
+    can :manage, :all
   end
 
   def user_rules(user)

@@ -1,0 +1,13 @@
+<h1>Create new category</h1>
+<%= render "form" %>
+
+<ul class="categories">
+  <% @categories.each do |category| %>
+    <li>
+      <%= link_to category.name, admin_category_path(category) %> |
+      <%= link_to "Edit", edit_admin_category_path(category) %> |
+      <%= link_to "Delete", admin_category_path(category), method: :delete,
+        data: {confirm: "Are you sure?"} %>
+    </li>
+  <% end %>
+</ul>

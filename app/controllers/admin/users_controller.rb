@@ -14,6 +14,6 @@ class Admin::UsersController < ApplicationController
     @user = User.find params[:id]
     @user.destroy
     flash[:success] = "Deleted"
-    redirect_to @admin_users_url
+    redirect_to admin_users_url
   end
 end
