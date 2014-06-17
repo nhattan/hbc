@@ -1,2 +1,40 @@
 <% provide(:title, @category.name) %>
 <h1><%= @category.name %></h1>
+
+<h2><%= link_to "Create new product", new_admin_product_path %></h2>
+<h2>OR</h2>
+<h2>Create product in this category</h2>
+<div class="row">
+  <div class="span8 offset4">
+    <%= form_for [:admin, Product.new] do |f| %>
+      <%= render "shared/errors", object: f.object %>
+      <%= f.hidden_field :category_id, value: @category.id %>
+      <%= f.label :name %>
+      <%= f.text_field :name, class: "input-xlarge", required: true %></br>
+      <%= f.label :description %>
+      <%= f.text_area :description, class: "input-xlarge" %></br>
+      <%= f.label :price %>
+      <%= f.number_field :price, class: "input-xlarge", required: true %></br>
+      <%= f.label :quantity %>
+      <%= f.number_field :quantity, class: "input-xlarge", required: true %></br>
+      <%= f.label :image %>
+      <%= f.file_field :image %></br>
+      <%= f.submit "Save", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>
+
+<strong>Products</strong>
+<ul class="categories">
+  <% @category.products.each do |product| %>
+    <li>
+      <%= link_to image_tag(product.image.url(:thumb)), admin_product_path(product) %>
+      <div><%= link_to product.name, admin_product_path(product) %></div>
+      <div>
+        <%= link_to "Edit", edit_admin_product_path(product) %> |
+        <%= link_to "Delete", admin_product_path(product), method: :delete,
+          data: {confirm: "Are you sure?"} %>
+      </div>
+    </li>
+  <% end %>
+</ul>
