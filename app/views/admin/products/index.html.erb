@@ -1,0 +1,18 @@
+<% provide(:title, "Products") %>
+<h1>Products</h1>
+
+<h2><%= link_to "Create new product", new_admin_product_path %></h2>
+
+<ul class="categories">
+  <% @products.each do |product| %>
+    <li>
+      <%= link_to image_tag(product.image.url(:thumb)), admin_product_path(product) %>
+      <div><%= link_to product.name, admin_product_path(product) %></div>
+      <div>
+        <%= link_to "Edit", edit_admin_product_path(product) %> |
+        <%= link_to "Delete", admin_product_path(product), method: :delete,
+          data: {confirm: "Are you sure?"} %>
+      </div>
+    </li>
+  <% end %>
+</ul>

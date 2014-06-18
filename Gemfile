@@ -28,6 +28,7 @@ gem "devise"
 gem "cancancan", "~> 1.8"
 gem "will_paginate", "~> 3.0"
 gem "bootstrap-will_paginate"
+gem "paperclip", "~> 4.1"
 group :development, :test do
   gem "pry-rails"
   gem "pry"
