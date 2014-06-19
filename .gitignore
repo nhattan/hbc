@@ -19,3 +19,4 @@ db/schema.rb
 # Ignore the test
 /test
 Gemfile.lock
+public/system/
