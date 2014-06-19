@@ -18,11 +18,9 @@ Brand.create(name: "SRAM")
 Brand.create(name: "Giant")
 Brand.create(name: "Trek")
 (1..5).each do |i|
+  Category.create(name: "Category #{i}")
   (1..5).each do |j|
-    Category.create(name: "Category #{i} #{j}", brand_id: i)
-    (1..5).each do |k|
-      Product.create(name: "Product #{i} #{j} #{k}", category_id: j, 
-        price: k*100, quantity: k)
-    end
+    Product.create(name: "Product #{i} #{j}", category_id: j, 
+      price: j*100, quantity: j, brand_id: j)
   end
 end
