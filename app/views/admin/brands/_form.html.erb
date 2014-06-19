@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="span8 offset4">
+    <%= form_for [:admin, @brand] do |f| %>
+      <%= render "shared/errors", object: f.object %>
+      <%= f.label :name %>
+      <%= f.text_field :name, placeholder: "Name" %></br>
+      <%= f.label :image %>
+      <%= f.file_field :image %></br></br>
+      <%= f.submit "Save", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>

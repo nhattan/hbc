@@ -17,7 +17,7 @@ class Admin::ProductsController < ApplicationController
   def create
     @product = Product.new product_params
     if @product.save
-      redirect_to admin_category_url(@product.category)
+      redirect_to [:admin, @product]
     else
       render :new
     end
@@ -30,7 +30,7 @@ class Admin::ProductsController < ApplicationController
   def update
     @product = Product.find params[:id]
     if @product.update_attributes product_params
-      redirect_to admin_category_url(@product.category)
+      redirect_to [:admin, @product]
     else
       render :edit
     end
@@ -44,6 +44,6 @@ class Admin::ProductsController < ApplicationController
 
   private
   def product_params
-    params.require(:product).permit(:category_id, :name, :description, :price, :quantity, :image)
+    params.require(:product).permit(:brand_id, :category_id, :name, :description, :price, :quantity, :image)
   end
 end
