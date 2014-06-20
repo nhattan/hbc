@@ -3,7 +3,7 @@ class Admin::ProductsController < ApplicationController
   load_and_authorize_resource param_method: :product_params
   
   def index
-    @products = Product.all
+    @products = Product.paginate(page: params[:page], per_page: 8)
   end
 
   def show
@@ -44,6 +44,9 @@ class Admin::ProductsController < ApplicationController
 
   private
   def product_params
-    params.require(:product).permit(:brand_id, :category_id, :name, :description, :price, :quantity, :image)
+    params.require(:product).permit(:brand_id, :category_id, :name, :description, 
+      :price, :quantity, :image).tap do |while_listed|
+      while_listed[:bike_types] = params[:product][:bike_types]
+    end
   end
 end

@@ -1,6 +1,6 @@
 class Product < ActiveRecord::Base
   BIKE_TYPES = ["MTB", "ROAD", "CITY", "HYBRID", "BMX"]
-  serialize :bike_type, Array
+  serialize :bike_types
   belongs_to :category
   belongs_to :brand
   has_many :line_items, dependent: :destroy

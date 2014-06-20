@@ -25,6 +25,11 @@
         prompt: "Please pick a category" %></br>
       <%= f.label :image %>
       <%= f.file_field :image %></br>
+      <%= f.label :bike_types %>
+      <% Product::BIKE_TYPES.each do |bike_type| %>
+        <%= f.check_box :bike_types, {multiple: true}, bike_type, nil %>
+        <%= bike_type %>
+      <% end %></br></br>
       <%= f.submit "Save", class: "btn btn-primary" %>
     <% end %>
   </div>
