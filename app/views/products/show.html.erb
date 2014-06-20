@@ -1,0 +1,25 @@
+<% provide(:title, @product.name) %>
+<h1><%= @product.name %></h1>
+
+<table class="table table-bordered table-hover">
+  <th>
+    <%= link_to @product.brand.name, @product.brand %> >
+    <%= link_to @product.category.name, @product.category %> >
+    <%= @product.name %>
+  </th>
+  <th>Specification</th>
+  <tr>
+    <td><%= link_to image_tag(@product.image.url(:medium)), 
+      @product.image.url(:original), onclick: "window.open(this.href, 'product', 'height=800, width=800');return false;" %>
+    </td>
+    <td><%= @product.description %></td>
+  </tr>
+  <tr>
+    <td>In Stock: <%= @product.quantity %></td>
+    <td>Usable for Bikes: <%= @product.bike_types.try(:to_sentence) %></td>
+  </tr>
+  <tr>
+    <td>Price: <%= @product.price %></td>
+    <td></td>
+  </tr>
+</table>
