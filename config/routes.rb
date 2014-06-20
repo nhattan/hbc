@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :admins
   devise_for :users
-  root  "static_pages#home"
+  root  "products#index"
   match "/help",    to: "static_pages#help",    via: "get"
   match "/about",   to: "static_pages#about",   via: "get"
   match "/contact", to: "static_pages#contact", via: "get"
@@ -13,6 +13,9 @@ Rails.application.routes.draw do
     resources :categories
     resources :products
   end
+  resources :brands
+  resources :categories
+  resources :products
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
