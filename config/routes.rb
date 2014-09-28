@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :admins
-  devise_for :users
-  root  "products#index"
+  devise_for :users, controllers: { omniauth_callbacks: "omniauth_callbacks" }
+  root "brands#index"
   match "/help",    to: "static_pages#help",    via: "get"
   match "/about",   to: "static_pages#about",   via: "get"
   match "/contact", to: "static_pages#contact", via: "get"
@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   resources :brands
   resources :categories
   resources :products
+  match "/users/:id/finish_signup", to: "users#finish_signup",
+    via: [:get, :patch], as: :finish_signup
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
