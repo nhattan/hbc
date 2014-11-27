@@ -129,7 +129,7 @@ server {
 
         passenger_enabled on;
         rails_env    production;
-        root /usr/www/matee/current/public;
+        root /var/www/matee/current/public;
         #index index.html index.htm;
 
         # Make site accessible from http://localhost/
@@ -427,3 +427,54 @@ create database matee_production;
 In Terminal:
 
 ```RAILS_ENV=production cap production deploy```
+
+
+Check your deploy:
+
+```
+cd /var/www/matee
+ll
+```
+Ban se thay:
+```
+total 28
+drwxr-sr-x 6 deploy deploy 4096 Nov 27 04:48 ./
+drwxr-xr-x 3 root   root   4096 Nov 27 03:30 ../
+lrwxrwxrwx 1 deploy deploy   38 Nov 27 04:48 current -> /var/www/matee/releases/20141127094637/
+drwxrwsr-x 5 deploy deploy 4096 Nov 27 04:46 releases/
+drwxrwsr-x 7 deploy deploy 4096 Nov 27 04:33 repo/
+-rw-rw-r-- 1 deploy deploy   70 Nov 27 04:48 revisions.log
+drwxrwsr-x 2 deploy deploy 4096 Nov 27 03:36 rvm1scripts/
+drwxrwsr-x 6 deploy deploy 4096 Nov 27 04:33 shared/
+```
+
+```
+cd current
+ll config
+```
+
+```
+total 44
+drwxrwsr-x  7 deploy deploy 4096 Nov 27 04:46 ./
+drwxrwsr-x 14 deploy deploy 4096 Nov 27 04:48 ../
+-rw-rw-r--  1 deploy deploy 1436 Nov 13 09:09 application.rb
+-rw-rw-r--  1 deploy deploy  170 Nov 13 09:09 boot.rb
+lrwxrwxrwx  1 deploy deploy   41 Nov 27 04:46 database.yml -> /var/www/matee/shared/config/database.yml
+-rw-rw-r--  1 deploy deploy  150 Nov 13 09:09 environment.rb
+drwxrwsr-x  2 deploy deploy 4096 Nov 13 09:09 environments/
+drwxrwsr-x  2 deploy deploy 4096 Nov 13 09:09 initializers/
+drwxrwsr-x  5 deploy deploy 4096 Nov 13 09:09 locales/
+drwxrwsr-x  2 deploy deploy 4096 Nov 13 09:09 routes/
+-rw-rw-r--  1 deploy deploy 1653 Nov 13 09:09 routes.rb
+lrwxrwxrwx  1 deploy deploy   40 Nov 27 04:46 secrets.yml -> /var/www/matee/shared/config/secrets.yml
+drwxrwsr-x  2 deploy deploy 4096 Nov 13 09:09 settings/
+-rw-rw-r--  1 deploy deploy    0 Nov 13 09:09 settings.yml
+```
+
+```
+gem install daemon_controller
+bin/rake db:create db:migrate
+RAILS_EVN=production passenger start
+```
+
+Ban co the truy cap vao http://your_droplet_address:3000 de thay app cua ban hoat dong!
