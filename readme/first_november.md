@@ -29,6 +29,14 @@ Add user deploy vào sudo group: ```sudo adduser deploy sudo```
 # Allow members of group sudo to execute any command
 %sudo   ALL=(ALL:ALL) ALL
 ```
+
+```
+sudo visudo
+deploy ALL=NOPASSWD:/etc/init.d/nginx
+```
+
+The above line let’s our deploy user execute the nginx start, stop and restart commands without supplying a password (although he still has to put sudo in front of the command). You need to specify full paths for every command you want to replace deploy with the correct user name.
+
 Login vào deploy user: ```su deploy```
 
 Before we move forward is that we're going to setup SSH to authenticate via keys instead of having to use a password to login. It's more secure and will save you time in the long run.
@@ -393,6 +401,27 @@ Socket:
 [client]
 port            = 3306
 socket          = /var/run/mysqld/mysqld.sock
+```
+
+Tao file secrets.yml 
+```
+sudo nano /var/www/matee/shared/config/secrets.yml
+```
+
+Dien vao file nhu sau:
+```
+development:
+  secret_key_base: your_development_key_here
+production:
+  secret_key_base: your_production_key_here
+```
+
+Ban co the tao key bang cach ```rake secret``` o local root rails app folder cua ban
+
+Tao database cho rails app:
+```
+mysql -u root -p
+create database matee_production;
 ```
 
 In Terminal:
