@@ -9,47 +9,67 @@
 Hãy bắt đầu tạo VPS với [Digital Ocean](https://www.digitalocean.com/?refcode=e0e494858afd) - với mức giá và chất lượng rất tốt.
 Chỉ với $10/month($0.015/hour) bạn đã có một droplet với 1GB RAM, 30GB SSD Disk, 2TB transfer...
 
-![Image of Yaktocat](https://dl.dropboxusercontent.com/u/64551181/Emong/1980-01-06%2008.04.02.jpg)
+![Droplet Name](https://dl.dropboxusercontent.com/u/64551181/october/Screenshot%202014-11-27%2012.54.26.png)
+
+![Droplet Local](https://dl.dropboxusercontent.com/u/64551181/october/Screenshot%202014-11-27%2012.55.26.png)
+
+![Droplet Create](https://dl.dropboxusercontent.com/u/64551181/october/Screenshot%202014-11-27%2012.57.26.png)
+
 
 ## Cài đặt VPS cho Rails app để deploy
 
-Sau khi tạo VPS thành công bạn có thể dùng ssh hoặc ftp (Filezilla) để truy cập vào VPS, ở đây mình dùng ssh
+Sau khi tạo VPS thành công bạn có thể dùng ssh hoặc ftp (Filezilla) để truy cập vào VPS, ở đây mình dùng ssh:
 
-Neu chua co ssh key: https://help.github.com/articles/generating-ssh-keys/
+Nếu chưa tạo SSH key, hãy đọc bài viết này: https://help.github.com/articles/generating-ssh-keys/
 
-In Terminal: 
-```ssh root@128.199.143.244```
-Nếu (ảnh) thì:
-```ssh-keygen -R 128.199.143.244```
+In Terminal:
+```ssh root@your_droplet_ip```
 
-Sau khi bạn đã đăng nhập vào VPS với root user, hãy tạo một user để bắt đầu làm việc với app.
+Nếu bạn gặp trường hợp tương tự như thế này:
+```
+[XX@XX ~]$ ssh root@pong
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+6e:45:f9:a8:af:38:3d:a1:a5:c7:76:1d:02:f8:77:00.
+Please contact your system administrator.
+Add correct host key in /home/XX/.ssh/known_hosts to get rid of this message.
+Offending RSA key in /var/lib/sss/pubconf/known_hosts:4
+RSA host key for pong has changed and you have requested strict checking.
+Host key verification failed.
+```
+
+Hãy ```ssh-keygen -R your_droplet_ip``` để thêm your_droplet_ip vào known_hosts
+
+Sau khi bạn đã đăng nhập vào VPS với root user, hãy tạo một user để bắt đầu làm việc với app:
+
 ```sudo adduser deploy```
-Add user deploy vào sudo group: ```sudo adduser deploy sudo```
-/etc/sudoers is pre-configured to grant permissions to all members of this group (You should not have to make any changes to this):
+
+Thêm user deploy vào sudo group: ```sudo adduser deploy sudo```
+
+File /etc/sudoers được cấu hình sẵn để cấp quyền cho tất cả member trong group (bạn không phải thay đổi gì trong file này)
+
 ```
 # Allow members of group sudo to execute any command
 %sudo   ALL=(ALL:ALL) ALL
 ```
 
-```
-sudo visudo
-deploy ALL=NOPASSWD:/etc/init.d/nginx
-```
-
-The above line let’s our deploy user execute the nginx start, stop and restart commands without supplying a password (although he still has to put sudo in front of the command). You need to specify full paths for every command you want to replace deploy with the correct user name.
-
 Login vào deploy user: ```su deploy```
 
-Before we move forward is that we're going to setup SSH to authenticate via keys instead of having to use a password to login. It's more secure and will save you time in the long run.
+Mình khuyên bạn nên cài đặt đăng nhập user deploy bằng key để an toàn hơn.
 
-We're going to use ssh-copy-id to do this. If you're on OSX you may need to run brew install ssh-copy-id but if you're following this tutorial on Linux desktop, you should already have it.
+Sử dụng ssh-copy-id để làm việc này, nếu bạn đang dùng Mac, chạy ```brew install ssh-copy-id``` để cài đặt ssh-copy-id
 
-Once you've got ssh-copy-id installed, run the following and replace IPADDRESS with the one for your server:
-Chạy ở local (not VPS): ```ssh-copy-id deploy@128.199.143.244```
+Chạy ở local (not VPS): ```ssh-copy-id deploy@your_droplet_ip```
 
 ### Cài đặt Ruby
 
-#### Cài đặt một số dependencies cho Ruby:
+#### Cài đặt dependencies cho Ruby:
+
 ```
 sudo apt-get update
 sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties
@@ -61,9 +81,18 @@ sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libread
 sudo apt-get install libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
 curl -L https://get.rvm.io | bash -s stable
 ```
-Nếu bị lỗi hãy thử ``gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3```
-hoặc ```command curl -sSL https://rvm.io/mpapis.asc | gpg --import -``` nếu không được
+
+Nếu bị lỗi hãy thử:
+
+```
+gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
+# hoặc
+command curl -sSL https://rvm.io/mpapis.asc | gpg --import -
+```
+
 Sau đó chạy lại ```curl -L https://get.rvm.io | bash -s stable```
+
+Update script và cài Ruby:
 
 ```
 source ~/.rvm/scripts/rvm
@@ -75,9 +104,8 @@ echo "gem: --no-ri --no-rdoc" > ~/.gemrc
 
 ### Cài đặt Nginx
 
-Phusion is the company that develops Passenger and they recently put out an official Ubuntu package that ships with Nginx and Passenger pre-installed.
+Bạn có thể sử dụng gói cài đặt nginx passenger của Phusion Passenger vì nó rất dễ cài đặt:
 
-We'll be using that to setup our production server because it's very easy to setup.
 ```
 # Install Phusion's PGP key to verify packages
 gpg --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7
@@ -96,13 +124,17 @@ sudo apt-get update
 sudo apt-get install nginx-full passenger
 ```
 
-```sudo service nginx start``` hoặc ```sudo service nginx ``` để xem usage:
+Sau khi cài đặt thành công passenger, chạy ```sudo service nginx start``` hoặc ```sudo service nginx ``` để xem usage:
+
 ```Usage: nginx {start|stop|restart|reload|force-reload|status|configtest|rotate|upgrade}```
-Ngoài ra bạn có thể kiểm tra qua: ```ps aux | grep nginx```
+
+Ngoài ra bạn có thể kiểm tra process bằng cách: ```ps aux | grep nginx```
+
+Cấu hình Nginx:
 
 ```sudo nano /etc/nginx/nginx.conf``` hoặc ```sudo vi /etc/nginx/nginx.conf```
 
-Find the following lines, and uncomment them:
+Uncomment hai dòng như bên dưới:
 
 ```
 ##
@@ -115,11 +147,9 @@ passenger_root /usr/lib/ruby/vendor_ruby/phusion_passenger/locations.ini;
 passenger_ruby /usr/bin/ruby;
 ```
 
-Chạy ```which ruby``` sau đó sửa passenger_ruby theo đường dẫn đó, ví dụ:
+Đối với dòng passenger_ruby bạn chạy  ```which ruby``` sau đó sửa passenger_ruby theo đường dẫn đó, ví dụ:
 
 ```passenger_ruby /home/deploy/.rvm/rubies/ruby-2.1.0/bin/ruby;```
-
-Configure nginx:
 
 Bạn có thể edit file ```/etc/nginx/sites-enabled/default``` như sau:
 
@@ -130,7 +160,7 @@ server {
 
         passenger_enabled on;
         rails_env    production;
-        root /var/www/matee/current/public;
+        root /var/www/your_app/current/public;
         #index index.html index.htm;
 
         # Make site accessible from http://localhost/
@@ -146,7 +176,8 @@ server {
 }
 ```
 
-Once you've changed passenger_ruby to use the right version Ruby, you can run ```sudo service nginx restart``` to restart Nginx with the new Passenger configuration.
+
+Mỗi lần bạn cấu hình Nginx hãy chạy ```sudo service nginx restart``` để khởi động lại Nginx.
 
 ### Cài đặt MySQL
 
@@ -154,80 +185,28 @@ Once you've changed passenger_ruby to use the right version Ruby, you can run ``
 
 Check cài đặt ```mysql -u root -p``
 
-## Tạo Rails app, cài đặt và deploy (Capistrano)
-
-### Tạo Rails app
-
-Nếu bạn đã có sẵn Rails app và cài đặt git, vui lòng bỏ qua bước này
-
-```
-# Create a sample Rails application
-rails new my_app
-
-# Enter the application directory
-cd my_app
-
-# Create a sample resource
-rails generate scaffold Task title:string note:text
-
-# Create a sample database
-RAILS_ENV=development rake db:migrate
-
-# Enter the application directory
-cd my_app
-
-# Run a simple server
-rails s
-```
+## Cài đặt git và deploy (Capistrano)
 
 ### Cài đặt git
 
 ```
-# Initiate the repository
-git init
-
-# Add all the files to the repository
-git add .
-
-# Commit the changes
-git commit -m "first commit"
-
-# Add your Github repository link 
-# Example: git remote add origin git@github.com:[user name]/[proj. name].git
-git remote add origin git@github.com:user123/my_app.git
-
-# Create an RSA/SSH key
-# Follow the on-screen instructions
-ssh-keygen -t rsa
-
-# View the contents of the key and add it to your Github
-# by copy-and-pasting from the current remote session by
-# visiting: https://github.com/settings/ssh
-# To learn more about the process,
-# visit: https://help.github.com/articles/generating-ssh-keys
-cat /root/.ssh/id_rsa.pub
-
-# Set your Github information
-# Username:
-# Usage: git config --global user.name "[your username]"
-git config --global user.name "user123"
-
-# Email:
-# Usage: git config --global user.email "[your email]"
-git config --global user.email "user123@domain.tld"
-
-# Push the project's source code to your Github account
+git remote add origin git@github.com:your_username/your_app.git
+git config --global user.name "your_username"
+git config --global user.email "your_email"
 git push -u origin master
 ```
 
 ### Cài đặt Capistrano
 Thêm vào Gemfile, sau đó ```bundle install```
+
 Nếu bạn sử dụng passenger làm Rails server:
+
 ```
 gem "passenger"
 gem "capistrano", "~> 3.2.0"
 gem "capistrano-rails", "~> 1.1"
 ```
+
 Nếu bạn sử dụng unicorn làm Rails server:
 
 ```
@@ -237,10 +216,13 @@ gem "capistrano-rails", "~> 1.1"
 ```
 
 Capify: make sure there's no "Capfile" or "capfile" present
+
 ```bundle exec cap install```
+
 More: https://github.com/capistrano/capistrano
 
 Kiểm tra Capfile, chắc chắn đủ những dòng sau:
+
 ```
 # Load DSL and Setup Up Stages
 require 'capistrano/setup'
@@ -248,19 +230,7 @@ require 'capistrano/setup'
 # Includes default deployment tasks
 require 'capistrano/deploy'
 
-# Includes tasks from other gems included in your Gemfile
-#
-# For documentation on these, see for example:
-#
-#   https://github.com/capistrano/rvm
-#   https://github.com/capistrano/rbenv
-#   https://github.com/capistrano/chruby
-#   https://github.com/capistrano/bundler
-#   https://github.com/capistrano/rails
-#
 require 'capistrano/rvm'
-# require 'capistrano/rbenv'
-# require 'capistrano/chruby'
 require 'capistrano/rails'
 require 'capistrano/bundler'
 require 'capistrano/rails/assets'
@@ -268,21 +238,22 @@ require 'capistrano/rails/migrations'
 require 'rvm1/capistrano3'
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }
-```n
+```
 
-Bạn có thể cài đặt your_app/config/deploy.rb như sau:
+Bạn có thể cài đặt file ```config/deploy.rb``` như sau:
+
 ```
 # config valid only for Capistrano 3.1
 lock '3.2.1'
 
 set :application, 'matee'
-set :repo_url, "git@github.com:nhattan/matee.git"
+set :repo_url, "git@github.com:your_username/your_app.git"
 
 # Default branch is :master
 ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/var/www/matee'
+set :deploy_to, '/var/www/your_app'
 
 # Default value for :scm is :git
 set :scm, :git
@@ -300,11 +271,7 @@ set :pty, true
 set :linked_files, %w{config/database.yml config/secrets.yml}
 
 # Default value for linked_dirs is []
-# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 set :linked_dirs, %w{public/uploads public/assets}
-
-# Default value for default_env is {}
-set :default_env, { path: "/usr/local/rvm/gems/ruby-2.1.0@global/bin:$PATH" }
 
 # Default value for keep_releases is 5
 set :keep_releases, 3
@@ -322,42 +289,35 @@ namespace :deploy do
 
   after :publishing, :restart
 
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 1 do
-
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
-    end
-  end
-
 end
-```
-
-File ```config/deploy/production.rb```
 
 ```
-role :app, %w{deployer@128.199.143.244}
-role :web, %w{deployer@128.199.143.244}
-role :db,  %w{deployer@128.199.143.244}
 
-server '128.199.143.244', user: 'deployer', roles: %w{web}
+Để user deploy có thể restart nginx server:
 
-set :ssh_options, {
- keys: %w(/home/deployer/.ssh/id_rsa),
- forward_agent: false,
- auth_methods: %w(password),
- password: "deployer"
-}
+```
+sudo visudo
+# Thêm vào dòng sau
+deploy ALL=NOPASSWD:/etc/init.d/nginx
+```
 
+Dòng trên cho phép user deploy execute nginx start, stop và restart mà không cần password
+
+Bạn có thể cấu hình file ```config/deploy/production.rb``` như sau
+
+```
+role :app, %w{deploy@your_droplet_ip}
+role :web, %w{deploy@your_droplet_ip}
+role :db,  %w{deploy@your_droplet_ip}
+
+server '128.199.143.244', user: 'deploy', roles: %w{web}
 ```
 
 ### Let's deploy
 
 In Terminal:
 ```
-ssh root@remote
+# in vps
 deploy_to=/var/www/your_app
 mkdir -p ${deploy_to}
 chown deploy:deploy ${deploy_to}
@@ -367,14 +327,13 @@ mkdir ${deploy_to}/{releases,shared}
 chown deploy ${deploy_to}/{releases,shared}
 ```
 
-Note: The chmod g+s is a really handy, and little known Unix feature, it means that at the operating system level, without having to pay much attention to the permissions at runtime, all files an directories created inside the ${deploy_to} directory will inherit the group ownership, that means in this case even though we are root, the files will be created being owned by root with the group deploy, the umask 0002 ensures that the files created during this session are created with the permissions owner read/write, group: read/write, other: none. This means that we'll be able to read these files from Apache, or our web server by running the web server in the deploy group namespace.
-
 Tao file database.yml 
 ```
 su deploy
-sudo nano /var/www/matee/shared/config/database.yml
+sudo nano /var/www/your_app/shared/config/database.yml
 ```
-Dien vao nhu sau:
+
+Cấu hình mysql cho app của bạn như sau:
 
 ```
 default: &default
@@ -387,16 +346,14 @@ default: &default
 
 development:
   <<: *default
-  database: matee_development
+  database:your_app_development
 
 production:
   <<: *default
-  database: matee_production
+  database: your_app_production
 ```
 
-Socket:
-
-``vi /etc/mysql/my.cnf```  you will see:
+Để tìm socket chính xác: ```vi /etc/mysql/my.cnf```  bạn sẽ thấy:
 
 ```
 [client]
@@ -404,12 +361,14 @@ port            = 3306
 socket          = /var/run/mysqld/mysqld.sock
 ```
 
-Tao file secrets.yml 
+Tạo file secrets.yml 
+
 ```
-sudo nano /var/www/matee/shared/config/secrets.yml
+sudo nano /var/www/your_app/shared/config/secrets.yml
 ```
 
-Dien vao file nhu sau:
+Điền vào file với nội dung như sau:
+
 ```
 development:
   secret_key_base: your_development_key_here
@@ -417,31 +376,34 @@ production:
   secret_key_base: your_production_key_here
 ```
 
-Ban co the tao key bang cach ```rake secret``` o local root rails app folder cua ban
+Bạn có thể tạo secret key bằng cách chạy ```rake secret``` ở your_app local folder
 
-Tao database cho rails app:
+Tạo database:
+
 ```
 mysql -u root -p
-create database matee_production;
+create database your_app_production;
 ```
 
-In Terminal:
+In your_app local folder:
 
 ```RAILS_ENV=production cap production deploy```
-
 
 Check your deploy:
 
 ```
-cd /var/www/matee
+# in vps
+cd /var/www/your_app
 ll
 ```
-Ban se thay:
+
+Bạn sẽ thấy thư mục current symlink đến bản releases 20141127094637 vừa deploy xong:
+
 ```
 total 28
 drwxr-sr-x 6 deploy deploy 4096 Nov 27 04:48 ./
 drwxr-xr-x 3 root   root   4096 Nov 27 03:30 ../
-lrwxrwxrwx 1 deploy deploy   38 Nov 27 04:48 current -> /var/www/matee/releases/20141127094637/
+lrwxrwxrwx 1 deploy deploy   38 Nov 27 04:48 current -> /var/www/your_app/releases/20141127094637/
 drwxrwsr-x 5 deploy deploy 4096 Nov 27 04:46 releases/
 drwxrwsr-x 7 deploy deploy 4096 Nov 27 04:33 repo/
 -rw-rw-r-- 1 deploy deploy   70 Nov 27 04:48 revisions.log
@@ -449,10 +411,14 @@ drwxrwsr-x 2 deploy deploy 4096 Nov 27 03:36 rvm1scripts/
 drwxrwsr-x 6 deploy deploy 4096 Nov 27 04:33 shared/
 ```
 
+Tiếp tục:
+
 ```
 cd current
 ll config
 ```
+
+Symlink của database.yml và secrets.yml nhằm mục đích an toàn:
 
 ```
 total 44
@@ -460,17 +426,19 @@ drwxrwsr-x  7 deploy deploy 4096 Nov 27 04:46 ./
 drwxrwsr-x 14 deploy deploy 4096 Nov 27 04:48 ../
 -rw-rw-r--  1 deploy deploy 1436 Nov 13 09:09 application.rb
 -rw-rw-r--  1 deploy deploy  170 Nov 13 09:09 boot.rb
-lrwxrwxrwx  1 deploy deploy   41 Nov 27 04:46 database.yml -> /var/www/matee/shared/config/database.yml
+lrwxrwxrwx  1 deploy deploy   41 Nov 27 04:46 database.yml -> /var/www/your_app/shared/config/database.yml
 -rw-rw-r--  1 deploy deploy  150 Nov 13 09:09 environment.rb
 drwxrwsr-x  2 deploy deploy 4096 Nov 13 09:09 environments/
 drwxrwsr-x  2 deploy deploy 4096 Nov 13 09:09 initializers/
 drwxrwsr-x  5 deploy deploy 4096 Nov 13 09:09 locales/
 drwxrwsr-x  2 deploy deploy 4096 Nov 13 09:09 routes/
 -rw-rw-r--  1 deploy deploy 1653 Nov 13 09:09 routes.rb
-lrwxrwxrwx  1 deploy deploy   40 Nov 27 04:46 secrets.yml -> /var/www/matee/shared/config/secrets.yml
+lrwxrwxrwx  1 deploy deploy   40 Nov 27 04:46 secrets.yml -> /var/www/your_app/shared/config/secrets.yml
 drwxrwsr-x  2 deploy deploy 4096 Nov 13 09:09 settings/
 -rw-rw-r--  1 deploy deploy    0 Nov 13 09:09 settings.yml
 ```
+
+Chạy passenger để test:
 
 ```
 gem install daemon_controller
@@ -478,4 +446,12 @@ bin/rake db:create db:migrate
 RAILS_EVN=production passenger start
 ```
 
-Ban co the truy cap vao http://your_droplet_address:3000 de thay app cua ban hoat dong!
+Sau đó bạn dùng trình duyệt vào http://your_droplet_ip:3000 để thấy app của bạn.
+
+## Tham khảo thêm:
+https://www.digitalocean.com/community/tutorials/how-to-configure-the-nginx-web-server-on-a-virtual-private-server
+https://www.phusionpassenger.com/documentation/Users%20guide%20Nginx.html#rubygems_generic_install
+http://capistranorb.com/documentation/getting-started/authentication-and-authorisation/
+https://www.digitalocean.com/community/tutorials/how-to-set-up-automatic-deployment-with-git-with-a-vps
+https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-centos-7
+
