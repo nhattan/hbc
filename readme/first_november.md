@@ -6,9 +6,10 @@
 
 ## Tạo một VPS với DigitalOcean
 
-Hãy bắt đầu tạo VPS với Digital Ocean - với mức giá và chất lượng rất tốt.
+Hãy bắt đầu tạo VPS với [Digital Ocean](https://www.digitalocean.com/?refcode=e0e494858afd) - với mức giá và chất lượng rất tốt.
 Chỉ với $10/month($0.015/hour) bạn đã có một droplet với 1GB RAM, 30GB SSD Disk, 2TB transfer...
-Ảnh
+
+![Image of Yaktocat](https://www.dropbox.com/s/31fen4bqcdcnevu/Screenshot%202014-11-27%2012.54.26.png)
 
 ## Cài đặt VPS cho Rails app để deploy
 
