@@ -20,6 +20,7 @@ class Ability
   def user_rules(user)
     can :read, :all
     can :crud, [User]
+    can :finish_signup, [User]
   end
 
   def guest_rules(user)

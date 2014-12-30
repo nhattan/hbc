@@ -80,4 +80,7 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # General Settings
+  config.app_domain = "hbcnt.herokuapp.com/"
 end
