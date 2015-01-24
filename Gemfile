@@ -32,6 +32,8 @@ gem "cancancan", "~> 1.8"
 gem "will_paginate", "~> 3.0"
 gem "bootstrap-will_paginate"
 gem "paperclip", "~> 4.1"
+gem "aws-sdk"
+gem "refile", "~> 0.5.1", require: ["refile/rails"]
 group :development, :test do
   gem "pry-rails"
   gem "pry"

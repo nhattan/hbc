@@ -1,6 +1,6 @@
 <div class="row">
   <div class="span8 offset4">
-    <%= form_for [:admin, @product] do |f| %>
+    <%= form_for [:admin, @product], html: {multipart: true} do |f| %>
       <%= render "shared/errors", object: f.object %>
       <%= f.label :name %>
       <%= f.text_field :name, class: "input-xlarge", required: true %></br>
@@ -10,13 +10,19 @@
       <%= f.number_field :price, class: "input-xlarge", required: true %></br>
       <%= f.label :quantity %>
       <%= f.number_field :quantity, class: "input-xlarge", required: true %></br>
-      <%= f.label :image %>
-      <%= f.file_field :image %></br>
+      <%= f.label :pictures %>
+      <%= f.fields_for :pictures do |builder| %>
+      <div>
+        <%= builder.object.file_name %>
+        <%= builder.check_box :_destroy %>
+      </div>
+      <% end %>
+      <%= file_field_tag "pictures[]", multiple: true %></br>
       <%= f.label :brand %>
-      <%= f.collection_select :brand_id, Brand.all, :id, :name, 
+      <%= f.collection_select :brand_id, Brand.all, :id, :name,
         prompt: "Please pick a brand" %></br>
       <%= f.label :category %>
-      <%= f.collection_select :category_id, Category.all, :id, :name, 
+      <%= f.collection_select :category_id, Category.all, :id, :name,
         prompt: "Please pick a category" %></br>
       <%= f.label :bike_types %>
       <% Product::BIKE_TYPES.each do |bike_type| %>

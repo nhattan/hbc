@@ -4,8 +4,14 @@
       <%= render "shared/errors", object: f.object %>
       <%= f.label :name %>
       <%= f.text_field :name, placeholder: "Name" %></br>
-      <%= f.label :image %>
-      <%= f.file_field :image %></br></br>
+      <% if @brand.persisted? %>
+      <div>
+        <%= f.object.file_name %>
+        <%= f.check_box :remove_avatar %>
+      </div>
+      <% end %>
+      <%= f.label :avatar %>
+      <%= f.attachment_field :avatar, direct: true, presigned: true %></br></br>
       <%= f.submit "Save", class: "btn btn-primary" %>
     <% end %>
   </div>

@@ -14,12 +14,6 @@
   </th>
   <th>Specification</th>
   <tr>
-    <td><%= link_to image_tag(@product.image.url(:medium)), 
-      @product.image.url(:original), onclick: "window.open(this.href, 'product', 'height=800, width=800');return false;" %>
-    </td>
-    <td><%= @product.description %></td>
-  </tr>
-  <tr>
     <td>In Stock: <%= @product.quantity %></td>
     <td>Usable for Bikes: <%= @product.bike_types.to_sentence %></td>
   </tr>
@@ -27,4 +21,11 @@
     <td>Price: <%= @product.price %></td>
     <td></td>
   </tr>
+
+  <% @product.pictures.each do |picture| %>
+    <tr>
+      <td><%= attachment_image_tag(picture, :file) %></td>
+      <td><%= number_to_human_size(picture.file_size) %></td>
+    </tr>
+  <% end %>
 </table>
