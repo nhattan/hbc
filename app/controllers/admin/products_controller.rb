@@ -1,7 +1,7 @@
 class Admin::ProductsController < ApplicationController
   before_filter :authenticate_admin!
   load_and_authorize_resource param_method: :product_params
-  
+
   def index
     @products = Product.paginate(page: params[:page], per_page: 8)
   end
@@ -17,6 +17,13 @@ class Admin::ProductsController < ApplicationController
   def create
     @product = Product.new product_params
     if @product.save
+      if params[:pictures].present?
+        begin
+          @product.create_pictures! params[:pictures]
+        rescue ActiveRecord::RecordInvalid
+          redirect_to [:admin, @product] and return
+        end
+      end
       redirect_to [:admin, @product]
     else
       render :new
@@ -29,7 +36,14 @@ class Admin::ProductsController < ApplicationController
 
   def update
     @product = Product.find params[:id]
-    if @product.update_attributes product_params
+    if @product.update(product_params)
+      if params[:pictures].present?
+        begin
+          @product.create_pictures! params[:pictures]
+        rescue ActiveRecord::RecordInvalid
+          redirect_to [:admin, @product] and return
+        end
+      end
       redirect_to [:admin, @product]
     else
       render :edit
@@ -44,8 +58,7 @@ class Admin::ProductsController < ApplicationController
 
   private
   def product_params
-    params.require(:product).permit(:brand_id, :category_id, :name, :description, 
-      :price, :quantity, :image).tap do |while_listed|
+    params.require(:product).permit(Product::UPDATABLE_ATTRIBUTES_FOR_ADMINS).tap do |while_listed|
       while_listed[:bike_types] = params[:product][:bike_types]
     end
   end

@@ -1,7 +1,7 @@
 class Admin::BrandsController < ApplicationController
   before_filter :authenticate_admin!
   load_and_authorize_resource param_method: :brand_params
-  
+
   def show
     @brand = Brand.find params[:id]
   end
@@ -48,6 +48,6 @@ class Admin::BrandsController < ApplicationController
 
   private
   def brand_params
-    params.require(:brand).permit(:name, :image)
+    params.require(:brand).permit(:name, :avatar, :remove_avatar)
   end
 end

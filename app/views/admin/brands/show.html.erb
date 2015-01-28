@@ -1,7 +1,7 @@
 <% provide(:title, @brand.name) %>
 <h1><%= @brand.name %></h1>
 <div class="center">
-  <%= link_to image_tag(@brand.image.url(:medium)), @brand.image.url(:thumb) %>
+  <%= attachment_image_tag(@brand, :avatar) %>
 </div>
 
 <h2><%= link_to "Create new product", new_admin_product_path %></h2>
@@ -21,7 +21,7 @@
       <%= f.label :quantity %>
       <%= f.number_field :quantity, class: "input-xlarge", required: true %></br>
       <%= f.label :category %>
-      <%= f.collection_select :category_id, Category.all, :id, :name, 
+      <%= f.collection_select :category_id, Category.all, :id, :name,
         prompt: "Please pick a category" %></br>
       <%= f.label :image %>
       <%= f.file_field :image %></br>

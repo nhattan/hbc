@@ -5,7 +5,7 @@
 <ul class="brands">
   <% @brands.each do |brand| %>
     <li>
-      <%= link_to image_tag(brand.image.url(:thumb)), admin_brand_path(brand) %>
+      <td><%= attachment_image_tag(brand, :avatar) %></td>
       <div>
         <%= link_to brand.name, admin_brand_path(brand) %>
       </div>
